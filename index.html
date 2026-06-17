@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Química Computacional - Aula Prática</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e40af;
+            --accent: #06b6d4;
+            --accent-light: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            color: white;
+            padding: 80px 20px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></svg>');
+            background-size: 100px 100px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 15px;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s, transform 0.2s;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        nav a:hover {
+            color: var(--secondary);
+            background: var(--background);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Section styles */
+        section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(var(--secondary), var(--accent));
+            border-radius: 2px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(var(--secondary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 30px;
+            padding-left: 25px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -34px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 3px solid var(--surface);
+            box-shadow: 0 0 0 3px var(--accent);
+        }
+
+        .timeline-item h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .timeline-item p {
+            color: var(--text-secondary);
+        }
+
+        /* Tools section */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .tool-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .tool-card .emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .tool-card h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .tool-card .tag {
+            display: inline-block;
+            background: var(--background);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        /* Info box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(30, 64, 175, 0.1));
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .info-box h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box p {
+            color: var(--text-secondary);
+        }
+
+        /* Banner */
+        .banner {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .banner img {
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        footer p {
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        footer .social {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        footer .social a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        footer .social a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 15px;
+                padding: 10px;
+            }
+
+            nav a {
+                font-size: 0.9rem;
+                padding: 6px 12px;
+            }
+
+            .container {
+                padding: 40px 15px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animation on scroll */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stats section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 20px;
+            padding: 50px 30px;
+            margin: 60px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(white, rgba(255,255,255,0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Workflow section */
+        .workflow-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .workflow-step {
+            flex: 1;
+            min-width: 200px;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .workflow-step:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .workflow-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--accent);
+            display: none;
+        }
+
+        @media (min-width: 900px) {
+            .workflow-step:not(:last-child)::after {
+                display: block;
+            }
+        }
+
+        .workflow-step .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(var(--secondary), var(--accent));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 15px;
+        }
+
+        .workflow-step h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .workflow-step p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Interactive quiz */
+        .quiz-section {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+            border: 2px solid var(--border);
+        }
+
+        .quiz-question {
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 15px 20px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--background);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        /* Resources section */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .resource-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .resource-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .resource-card h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .resource-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .resource-card a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .resource-card a:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🧪 Química Computacional</h1>
+    <p>Descoberta de Fármacos Assistida por Computador</p>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#intro">Introdução</a></li>
+        <li><a href="#aplicacoes">Aplicações</a></li>
+        <li><a href="#metodos">Métodos</a></li>
+        <li><a href="#ferramentas">Ferramentas</a></li>
+        <li><a href="#pratica">Aula Prática</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+    <section id="intro" class="fade-in">
+        <h2>O que é Química Computacional?</h2>
+        
+        <p style="font-size: 1.1rem; margin-bottom: 20px;">
+            A <strong>Química Computacional</strong> é uma área interdisciplinar que utiliza ferramentas computacionais 
+            para estudar moléculas, reações químicas e sistemas biológicos. Ela combina princípios da química, 
+            física, matemática e ciência da computação para resolver problemas químicos complexos.
+        </p>
+
+        <div class="info-box">
+            <h4>💡 Por que é importante?</h4>
+            <p>
+                A química computacional permite prever propriedades moleculares, entender mecanismos de reação 
+                e acelerar o processo de descoberta de novos fármacos, reduzindo custos e tempo de pesquisa.
+            </p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">🔬</div>
+                <h3>Modelagem Molecular</h3>
+                <p>Construção e análise de estruturas moleculares tridimensionais para entender conformações e interações.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3>Docking Molecular</h3>
+                <p>Simulação da interação entre moléculas (ligantes) e proteínas-alvo para prevenir afinidade de ligação.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Dinâmica Molecular</h3>
+                <p>Simulação do movimento de átomos e moléculas ao longo do tempo para estudar comportamento dinâmico.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🤖</div>
+                <h3>Inteligência Artificial</h3>
+                <p>Aplicação de machine learning e deep learning para predição de propriedades e descoberta de fármacos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="aplicacoes" class="fade-in">
+        <h2>Principais Aplicações</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <h4>🧬 Descoberta de Fármacos</h4>
+                <p>Identificação e otimização de compostos candidatos a medicamentos através de triagem virtual e design racional.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>💊 Química Medicinal</h4>
+                <p>Otimização de propriedades farmacocinéticas e farmacodinâmicas de compostos bioativos.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>🔮 Predição de Propriedades</h4>
+                <p>Cálculo de propriedades físico-químicas como logP, polaridade, solubilidade e toxicidade.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>🧪 Design de Materiais</h4>
+                <p>Desenvolvimento de novos materiais com propriedades específicas (catalisadores, polímeros, nanomateriais).</p>
+            </div>
+            <div class="timeline-item">
+                <h4>🧫 Biologia Estrutural</h4>
+                <p>Estudo de estruturas de proteínas, ácidos nucleicos e complexos biomoleculares.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="metodos" class="fade-in">
+        <h2>Métodos Computacionais</h2>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">📐</div>
+                <h3>Métodos Ab Initio</h3>
+                <p>Cálculos baseados em primeiros princípios da mecânica quântica. Alta precisão, mas alto custo computacional.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔧</div>
+                <h3>Mecânica Molecular</h3>
+                <p>Uso de campos de força para calcular energias e forças. Mais rápido, ideal para grandes sistemas.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔄</div>
+                <h3>Métodos Semi-Empíricos</h3>
+                <p>Combinação de princípios quânticos com parâmetros empíricos. Bom compromisso entre precisão e velocidade.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>QSAR/QSPR</h3>
+                <p>Relações quantitativas entre estrutura molecular e atividade/propriedade. Essencial para design de fármacos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="ferramentas" class="fade-in">
+        <h2>Ferramentas Utilizadas</h2>
+
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="emoji">🐍</div>
+                <h4>Anaconda</h4>
+                <p>Distribuição Python para ciência de dados</p>
+                <span class="tag">Ambiente</span>
+            </div>
+            <div class="tool-card">
+                <div class="emoji">🎯</div>
+                <h4>Dynamic Dock</h4>
+                <p>Ferramenta de docking molecular</p>
+                <span class="tag">Docking</span>
+            </div>
+            <div class="tool-card">
+                <div class="emoji">🧬</div>
+                <h4>Chimera</h4>
+                <p>Visualização e análise de estruturas</p>
+                <span class="tag">Visualização</span>
+            </div>
+            <div class="tool-card">
+                <div class="emoji">🖼️</div>
+                <h4>PyMOL</h4>
+                <p>Visualização molecular de alta qualidade</p>
+                <span class="tag">Visualização</span>
+            </div>
+            <div class="tool-card">
+                <div class="emoji">⚛️</div>
+                <h4>GROMACS</h4>
+                <p>Dinâmica molecular</p>
+                <span class="tag">Simulação</span>
+            </div>
+            <div class="tool-card">
+                <div class="emoji">🧪</div>
+                <h4>AutoDock Vina</h4>
+                <p>Dock molecular open-source</p>
+                <span class="tag">Docking</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="pratica" class="fade-in">
+        <h2>Aula Prática</h2>
+
+        <p style="font-size: 1.1rem; margin-bottom: 20px;">
+            Nesta atividade prática, os estudantes irão instalar e configurar ferramentas utilizadas 
+            em pesquisas modernas de química computacional, além de executar análises de docking 
+            molecular em proteínas de interesse biomédico.
+        </p>
+
+        <div class="info-box">
+            <h4>📋 Objetivos da Aula</h4>
+            <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                <li>Instalar e configurar o ambiente Anaconda</li>
+                <li>Aprender a usar ferramentas de visualização molecular</li>
+                <li>Realizar docking molecular com Dynamic Dock</li>
+                <li>Analisar resultados e interpretar dados</li>
+                <li>Compreender o fluxo de trabalho em CADD</li>
+            </ul>
+        </div>
+
+        <div class="workflow-container">
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <h4>Preparação</h4>
+                <p>Instalação do ambiente e ferramentas</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <h4>Seleção</h4>
+                <p>Escolha da proteína e ligantes</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <h4>Preparação</h4>
+                <p>Preparação das estruturas 3D</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">4</div>
+                <h4>Docking</h4>
+                <p>Execução do docking molecular</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">5</div>
+                <h4>Análise</h4>
+                <p>Interpretação dos resultados</p>
+            </div>
+        </div>
+
+        <div class="banner">
+            <img src="imagens/computacional.png" alt="Banner da Aula Prática">
+        </div>
+    </section>
+
+    <section class="fade-in">
+        <h2>📊 Impacto da Química Computacional</h2>
+        
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">50%</div>
+                    <div class="stat-label">Redução de custos em descoberta de fármacos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10x</div>
+                    <div class="stat-label">Mais rápido que métodos tradicionais</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Fármacos desenvolvidos com CADD</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Precisão em predições de ligação</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="fade-in">
+        <h2>🧠 Quiz Interativo</h2>
+        
+        <div class="quiz-section">
+            <div class="quiz-question">
+                <h4>1. O que é Docking Molecular?</h4>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Técnica de cristalografia de proteínas</div>
+                    <div class="quiz-option" data-correct="true">Simulação computacional da interação ligante-receptor</div>
+                    <div class="quiz-option" data-correct="false">Método experimental de síntese química</div>
+                    <div class="quiz-option" data-correct="false">Técnica de espectroscopia molecular</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <h4>2. Qual ferramenta é utilizada para visualização molecular?</h4>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Microsoft Excel</div>
+                    <div class="quiz-option" data-correct="true">PyMOL</div>
+                    <div class="quiz-option" data-correct="false">Adobe Photoshop</div>
+                    <div class="quiz-option" data-correct="false">Google Docs</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <h4>3. O que significa QSAR?</h4>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Quantitative Structure Analysis Research</div>
+                    <div class="quiz-option" data-correct="false">Quick Structure Analysis Results</div>
+                    <div class="quiz-option" data-correct="true">Quantitative Structure-Activity Relationship</div>
+                    <div class="quiz-option" data-correct="false">Quantum Structure Analysis Report</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="fade-in">
+        <h2>📚 Recursos Adicionais</h2>
+        
+        <div class="resources-grid">
+            <div class="resource-card">
+                <h4>📖 Artigos Científicos</h4>
+                <p>Publicações recentes sobre docking molecular e CADD</p>
+                <a href="#">Acessar →</a>
+            </div>
+            <div class="resource-card">
+                <h4>🎥 Tutoriais em Vídeo</h4>
+                <p>Passo a passo para usar as ferramentas principais</p>
+                <a href="#">Assistir →</a>
+            </div>
+            <div class="resource-card">
+                <h4>💻 Repositórios GitHub</h4>
+                <p>Códigos e scripts para análises computacionais</p>
+                <a href="#">Explorar →</a>
+            </div>
+            <div class="resource-card">
+                <h4>📊 Bancos de Dados</h4>
+                <p>PDB, DrugBank, ChEMBL e outros recursos</p>
+                <a href="#">Consultar →</a>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <p>Prof. Dr. Rafael Vieira</p>
+    <p>Instituto Federal de Rondônia - IFRO</p>
+    <div class="social">
+        <a href="mailto:rafael.vieira@ifro.edu.br">📧 Email</a>
+        <a href="https://lattes.cnpq.br/1793899281497827" target="_blank">🔗 Lattes</a>
+        <a href="#">📚 GitHub</a>
+    </div>
+    <p style="margin-top: 20px; font-size: 0.85rem; opacity: 0.7;">© 2024 - Química Computacional</p>
+</footer>
+
+<script>
+    // Scroll animation
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    });
+
+    // Quiz functionality
+    document.querySelectorAll('.quiz-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const question = this.closest('.quiz-question');
+            const feedback = question.querySelector('.quiz-feedback');
+            const isCorrect = this.dataset.correct === 'true';
+            
+            // Reset all options in this question
+            question.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark selected option
+            if (isCorrect) {
+                this.classList.add('correct');
+                feedback.textContent = '✓ Correto! ' + (this.textContent);
+                feedback.className = 'quiz-feedback show correct';
+            } else {
+                this.classList.add('incorrect');
+                feedback.textContent = '✗ Incorreto. Tente novamente!';
+                feedback.className = 'quiz-feedback show incorrect';
+                
+                // Show correct answer
+                question.querySelector('.quiz-option[data-correct="true"]').classList.add('correct');
+            }
+        });
+    });
+
+    // Animate stats on scroll
+    const statsSection = document.querySelector('.stats-section');
+    let statsAnimated = false;
+
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !statsAnimated) {
+                statsAnimated = true;
+                document.querySelectorAll('.stat-number').forEach(stat => {
+                    const target = parseInt(stat.textContent);
+                    let current = 0;
+                    const increment = target / 50;
+                    const suffix = stat.textContent.includes('%') ? '%' : (stat.textContent.includes('x') ? 'x' : '+');
+                    
+                    const updateCounter = () => {
+                        if (current < target) {
+                            current += increment;
+                            stat.textContent = Math.ceil(current) + suffix;
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            stat.textContent = target + suffix;
+                        }
+                    };
+                    updateCounter();
+                });
+            }
+        });
+    }, { threshold: 0.5 });
+
+    if (statsSection) {
+        statsObserver.observe(statsSection);
+    }
+</script>
+
+</body>
+</html>
